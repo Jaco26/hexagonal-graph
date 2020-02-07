@@ -44,13 +44,17 @@ function onResize() {
   canvas.resize(BOARD_WIDTH, BOARD_HEIGHT)
   board.resize(BOARD_WIDTH, BOARD_HEIGHT)
 
-  let id = 1
-  grid.cells.forEach((layer, l) => {
-    layer.forEach((cell, c, cells) => {
-      // canvas.text({ ...cell, fillStyle: 'black', text: id })
-      canvas.arc({ ...cell })
-      id += 1
-    })
+  let id = 0
+  grid.cells.forEach((cell, i) => {
+    canvas.text({ ...cell.dimensions, fillStyle: 'black', text: i})
+    canvas.arc({ ...cell.dimensions })
   })
+  // grid.cells.forEach((layer, l) => {
+  //   layer.forEach((cell, c, cells) => {
+  //     canvas.text({ ...cell.dimensions, fillStyle: 'black', text: id })
+  //     canvas.arc({ ...cell.dimensions })
+  //     id += 1
+  //   })
+  // })
 }
 
