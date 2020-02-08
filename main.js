@@ -1,6 +1,6 @@
 import Canvas from './models/canvas.js'
 import Board from './models/board.js';
-import makeGrid from './models/board-cell.js'
+
 
 
 let BOARD_WIDTH = window.innerWidth
@@ -10,30 +10,22 @@ let BOARD_HEIGHT = window.innerHeight
 const canvas = new Canvas()
 const board = new Board()
 
-const grid = makeGrid()
+canvas.on('click', onCanvasClick)
 
-console.log(grid)
-
-
-
-function setup() {
-  onResize()
-
-  
+const state = {
+  selectedCell: null
 }
 
-
-setup()
-
-
-window.canvas = canvas
-window.board = board
-window.onresize = onResize
-
+function drawGridOnCanvas() {
+  board.grid.cells.forEach((cell, i) => {
+    canvas.arc({ ...cell.dimensions })
+    canvas.text({ ...cell.dimensions, fillStyle: 'black', text: i })
+  })
+}
 
 function onResize() {
-  let width = 700
-  let height = 700
+  let width = 750
+  let height = 750
   if (window.innerWidth < 700 || window.innerHeight < 700) {
     width = 600
     height = 600
@@ -44,17 +36,36 @@ function onResize() {
   canvas.resize(BOARD_WIDTH, BOARD_HEIGHT)
   board.resize(BOARD_WIDTH, BOARD_HEIGHT)
 
-  let id = 0
-  grid.cells.forEach((cell, i) => {
-    canvas.text({ ...cell.dimensions, fillStyle: 'black', text: i})
-    canvas.arc({ ...cell.dimensions })
-  })
-  // grid.cells.forEach((layer, l) => {
-  //   layer.forEach((cell, c, cells) => {
-  //     canvas.text({ ...cell.dimensions, fillStyle: 'black', text: id })
-  //     canvas.arc({ ...cell.dimensions })
-  //     id += 1
-  //   })
-  // })
+  drawGridOnCanvas()
+
 }
 
+function onCanvasClick(e) {
+
+  const clicked = board.getCellByCoords(e.offsetX, e.offsetY)
+  state.selectedCell = state.selectedCell !== clicked
+    ? clicked
+    : null
+
+  console.log(state.selectedCell)
+  canvas._fillSelf()
+  drawGridOnCanvas()
+  if (state.selectedCell) {
+    canvas.arc({ ...state.selectedCell.dimensions, fillStyle: 'purple' })
+    canvas.text({ ...state.selectedCell.dimensions, text: state.selectedCell.id })
+  }
+ 
+
+}
+
+function setup() {
+  
+  onResize()
+}
+
+setup()
+
+
+window.canvas = canvas
+window.board = board
+window.onresize = onResize

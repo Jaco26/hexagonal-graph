@@ -9,13 +9,31 @@ export default class Canvas {
       font: '16px Arial'
     }
 
+    this._listeners = {}
+
+
     this._render = () => {
       this._fillSelf()
-      this._draw({ fillStyle: 'red' }, () => {
-        this.ctx.fillText('Hi', 35, 35)
-      })
       render.call(this)
     }
+  }
+
+  /**
+   * 
+   * @param {string} event 
+   * @param {(e: Event|MouseEvent)} listener 
+   */
+  on(event, listener) {
+    if (this._listeners[event]) {
+      this.off(event)
+    }
+    this._listeners[event] = listener
+    this.canvas.addEventListener(event, listener)
+  }
+  
+  off(event) {
+    this.canvas.removeEventListener(event, this._listeners[event])
+    this._listeners[event] = null
   }
 
   resize(width, height) {
@@ -46,6 +64,7 @@ export default class Canvas {
     this._draw({ fillStyle, strokeStyle }, () => {
       this.ctx.arc(x, y, r, 0, Math.PI * 2)
       this.ctx.stroke()
+      this.ctx.fill()
     })
   }
 
