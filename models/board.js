@@ -20,7 +20,7 @@ class Graph {
     let oppositeAngle = circle.findOppositeAngle(angle)
 
     if (oppositeAngle === 360) {
-
+      // the vertices at 360˚ and 0˚ will be the same. so...
       oppositeAngle = 0
 
     }
@@ -33,8 +33,8 @@ class Graph {
 
 function calculateNeighborCoords({ x, y, r }, angle) {
   return {
-    x: x + trig.cos(angle) * (r * 2),
-    y: y + trig.sin(angle) * (r * 2),
+    x: Math.round(x + trig.cos(angle) * (r * 2)),
+    y: Math.round(y + trig.sin(angle) * (r * 2)),
   }
 }
 
@@ -88,7 +88,7 @@ export default class Board {
           const nbrCoords = calculateNeighborCoords(dimensions, angle)
 
           const nbr = this.getCellByExactCoords(nbrCoords.x, nbrCoords.y)
-
+ 
           if (nbr) {
 
             graph.addEdge(id, nbr.id, angle)

@@ -27,8 +27,8 @@ function makeCell(id, parent, angle, layer, centerCoords) {
   const sineAngle = trig.sin(angle)
   const cosineAngle = trig.cos(angle)
 
-  cellDimensions.y = parent.dimensions.y + sineAngle * hypontenuse
-  cellDimensions.x = parent.dimensions.x +cosineAngle * hypontenuse
+  cellDimensions.y = Math.round(parent.dimensions.y + sineAngle * hypontenuse)
+  cellDimensions.x = Math.round(parent.dimensions.x + cosineAngle * hypontenuse)
 
   const cell = new Cell(id, parent.id, layer, cellDimensions)
 
@@ -79,12 +79,13 @@ function makeHexagonalGrid(layers, currentLayer, grid, centerCoords) {
       const id = grid.length
       let parentIndex = 0
       if (sideLength > 1) {
-        if (i > 0) {
+        // if (i > 0) {
           const mod = Math.ceil(i / sideLength)
           parentIndex = id - (mod + prevLayerCount)
-        } else {
-          parentIndex = id - prevLayerCount
-        }
+        // } 
+        // else {
+        //   parentIndex = id - prevLayerCount
+        // }
       }
       grid.insert(makeCell(id, grid.get(parentIndex), angle, currentLayer, centerCoords))
 

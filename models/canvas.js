@@ -1,7 +1,11 @@
 export default class Canvas {
   constructor(render = () => null) {
-    this.canvas = document.querySelector('canvas')
-    this.ctx = this.canvas.getContext('2d')
+    // this.canvas = document.querySelector('canvas')
+    // this.ctx = this.canvas.getContext('2d')
+    /** @type {HTMLCanvasElement} */
+    this.canvas = null
+    /** @type {CanvasRenderingContext2D} */
+    this.ctx = null
 
     this.defaults = {
       fillStyle: '#ddd',
@@ -16,6 +20,11 @@ export default class Canvas {
       this._fillSelf()
       render.call(this)
     }
+  }
+
+  init(canvas) {
+    this.canvas = canvas
+    this.ctx = this.canvas.getContext('2d')
   }
 
   /**
