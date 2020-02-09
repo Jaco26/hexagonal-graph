@@ -1,34 +1,6 @@
-import makeGrid, { HexagonalGridHeap } from './board-grid.js'
-import { trig, circle } from '../utils.js'
-
-
-class Graph {
-  constructor() {
-    this.data = {}
-  }
-
-  addVertex(v) {
-    if (!this.data[v]) {
-      this.data[v] = {}
-    }
-  }
-
-  addEdge(v1, v2, angle) {
- 
-    this.data[v1][angle] = v2
-    
-    let oppositeAngle = circle.findOppositeAngle(angle)
-
-    if (oppositeAngle === 360) {
-      // the vertices at 360˚ and 0˚ will be the same. so...
-      oppositeAngle = 0
-
-    }
-
-    this.data[v2][oppositeAngle] = v1
-  }
-}
-
+import makeGrid, { HexagonalGridHeap } from './grid.js'
+import Graph from './graph.js'
+import { trig } from '../../utils.js'
 
 
 function calculateNeighborCoords({ x, y, r }, angle) {
@@ -38,27 +10,6 @@ function calculateNeighborCoords({ x, y, r }, angle) {
   }
 }
 
-
-/**
- * 
- * @param {HexagonalGridHeap} grid 
- */
-function makeAdjacencyList(grid) {
-  const graph = new Graph()
-
-  grid.cells.forEach(cell => graph.addVertex(cell.id))
-  grid.cells.forEach(cell => {
-    const { id, layer, dimensions } = cell
-    let angle = 0
-    for (let i = 0; i < 6; i++) {
-      angle += i * 60
-      const nbr = calculateNeighborCoords(dimensions, angle)
-
-    }
-  })
-
-  return graph
-}
 
 
 export default class Board {

@@ -24,3 +24,18 @@ export const circle = {
     return one
   }
 }
+
+export const valueType = {
+  isObject(val) {
+    return val && !Array.isArray(val) && typeof val === 'object'
+  },
+  isArray(val) {
+    return Array.isArray(val)
+  },
+  isNull(val) {
+    return val === null
+  },
+  isUndefined(val) {
+    return val === undefined
+  } 
+}

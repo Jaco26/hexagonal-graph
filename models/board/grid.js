@@ -1,6 +1,6 @@
-import { trig } from '../utils.js'
+import { trig } from '../../utils.js'
 
-const RADIUS = 40
+const RADIUS = 50
 
 
 class Cell {

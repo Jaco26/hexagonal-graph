@@ -1,6 +1,7 @@
-
 import Canvas from './models/canvas.js'
-import Board from './models/board.js'
+import Board from './models/board/index.js'
+
+import './models/canvas/canvas-ui-element.js'
 
 const canvas = new Canvas()
 const board = new Board()
@@ -16,39 +17,23 @@ const app = new Vue({
       lockSelected: false,
       selectedCell: null,
       hoveredCell: null,
-      boardWidth: 0,
-      boardHeight: 0,
-      board: {
-        dimensions: {
-          width: 0,
-          height: 0,
-        }
-      }
+      boardWidth: 950,
+      boardHeight: 750,
     } 
   },
   mounted() {
-    window.onresize = this.onResize
     canvas.init(this.$refs.canvas)
-    this.onResize()
+    canvas.resize(this.boardWidth, this.boardHeight)
+    board.resize(this.boardWidth, this.boardHeight)
+    this.drawBoard()
   },
   methods: {
     drawBoard() {
       canvas._fillSelf()
       board.grid.cells.forEach((cell, i) => {
         canvas.arc({ ...cell.dimensions })
-        canvas.text({ ...cell.dimensions, fillStyle: 'black', text: i })
+        // canvas.text({ ...cell.dimensions, fillStyle: 'black', text: i })
       })
-    },
-    onResize() {
-      this.boardWidth = 750
-      this.boardHeight = 750
-      if (window.innerWidth < 750 || window.innerHeight < 750) {
-        this.boardWidth = 600
-        this.boardHeight = 600
-      }
-      canvas.resize(this.boardWidth, this.boardHeight)
-      board.resize(this.boardWidth, this.boardHeight)
-      this.drawBoard()
     },
     onCanvasClick(e) {
       const clicked = board.getCellByCoords(e.offsetX, e.offsetY)
@@ -73,13 +58,13 @@ const app = new Vue({
       if (newVal) {
         this.drawBoard()
         canvas.arc({ ...this.selectedCell.dimensions, fillStyle: 'purple' })
-        canvas.text({ ...this.selectedCell.dimensions, text: this.selectedCell.id })
+        // canvas.text({ ...this.selectedCell.dimensions, text: this.selectedCell.id })
 
         const nbrIds = board.adjacencyList.data[this.selectedCell.id]
         Object.keys(nbrIds).forEach(direction => {
           const nbr = board.grid.cells[nbrIds[direction]]
           canvas.arc({ ...nbr.dimensions, fillStyle: 'lightblue' })
-          canvas.text({ ...nbr.dimensions, fillStyle: 'black', text: nbr.id })
+          // canvas.text({ ...nbr.dimensions, fillStyle: 'black', text: nbr.id })
         })
       } 
     },
@@ -87,13 +72,13 @@ const app = new Vue({
       if (newVal) {
         this.drawBoard()
         canvas.arc({ ...newVal.dimensions, fillStyle: '#a5a' })
-        canvas.text({ ...newVal.dimensions, text: newVal.id })
+        // canvas.text({ ...newVal.dimensions, text: newVal.id })
 
         const nbrIds = board.adjacencyList.data[newVal.id]
         Object.keys(nbrIds).forEach(direction => {
           const nbr = board.grid.cells[nbrIds[direction]]
           canvas.arc({ ...nbr.dimensions, fillStyle: '#44a5' })
-          canvas.text({ ...nbr.dimensions, fillStyle: 'black', text: nbr.id })
+          // canvas.text({ ...nbr.dimensions, fillStyle: 'black', text: nbr.id })
         })
       } else if (!newVal && oldVal) {
         this.drawBoard()
