@@ -26,8 +26,13 @@ export class Dep {
 }
 
 
+/**
+ * 
+ * @param {Object<string, *>} data 
+ * @returns {Object<string, *>}
+ */
 export function makeReactiveData(data) {
-  const accumulator = {}
+  const accumulator = {};
   (function traverse(accum, obj) {
     Object.keys(obj).forEach(key => {
       if (valueType.isObject(obj[key])) {
