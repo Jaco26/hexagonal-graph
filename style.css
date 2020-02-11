@@ -1,0 +1,28 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.125rem;
+}
+
+.board {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  border: aqua 1rem outset;
+  background: #fa8;
+}
+
+.board-cells {
+  position: relative;
+}
+
+.board-cells__cell {
+  background: blue;
+}
+
+.board-cells__cell:hover {
+  background: purple;
+}

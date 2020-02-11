@@ -17,7 +17,7 @@ function makeRect({ data, children = [] } = {}) {
 
 const canvas = new Canvas()
 
-canvas.elements.push(
+canvas.children.push(
   makeRect({
     data: {
       x: 400,
