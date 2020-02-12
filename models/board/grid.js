@@ -9,7 +9,6 @@ class Cell {
     this.parentId = parentId
     this.layer = layer
     this.dimensions = dimensions
-    // this.neighbors = []
   }
 }
 
@@ -57,15 +56,15 @@ export class HexagonalGridHeap {
  * 
  * @param {number} layers 
  * @param {number} currentLayer 
- * @param {HexagonalGridHeap} grid 
+ * @param {Array} grid 
  * @param {*} centerCoords 
  */
-function makeHexagonalGrid(layers, currentLayer, grid, centerCoords) {
+export function makeHexagonalGrid(layers, currentLayer, grid, centerCoords) {
   if (layers <= 0) return grid
 
   if (currentLayer === 0) {
 
-    grid.insert(makeCell(0, null, null, currentLayer, centerCoords))
+    grid.push(makeCell(0, null, null, currentLayer, centerCoords))
 
   } else {
     // excluding the inital cell in the layer, how many cells are on each side
@@ -79,15 +78,11 @@ function makeHexagonalGrid(layers, currentLayer, grid, centerCoords) {
       const id = grid.length
       let parentIndex = 0
       if (sideLength > 1) {
-        // if (i > 0) {
-          const mod = Math.ceil(i / sideLength)
-          parentIndex = id - (mod + prevLayerCount)
-        // } 
-        // else {
-        //   parentIndex = id - prevLayerCount
-        // }
+        const mod = Math.ceil(i / sideLength)
+        parentIndex = id - (mod + prevLayerCount)
       }
-      grid.insert(makeCell(id, grid.get(parentIndex), angle, currentLayer, centerCoords))
+      // grid.insert(makeCell(id, grid.get(parentIndex), angle, currentLayer, centerCoords))
+      grid.push(makeCell(id, grid[parentIndex], angle, currentLayer, centerCoords))
 
       if (i % sideLength === 0) {
         angle += angleMod
@@ -98,7 +93,8 @@ function makeHexagonalGrid(layers, currentLayer, grid, centerCoords) {
 }
 
 export default function(centerCoords) {
-  return makeHexagonalGrid(4, 0, new HexagonalGridHeap(), centerCoords)
+  // return makeHexagonalGrid(4, 0, new HexagonalGridHeap(), centerCoords)
+  return makeHexagonalGrid(4, 0, [], centerCoords)
 }
 
 /*
