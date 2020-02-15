@@ -7,8 +7,8 @@ const app = new Vue({
   },
   template: `
     <div class="app-wrap">
-      <h1>Hello From The App</h1>
-      <HexagonalGraph />
+        <HexagonalGraph :width="500" :height="500" />
+
     </div>
   `,
   
