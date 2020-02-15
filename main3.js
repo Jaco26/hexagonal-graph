@@ -100,8 +100,12 @@ const HexagonGrid = {
   },
   template: `
     <div>
-      {{selectedCellId + 4}}
-      {{selectedCellNeighborIds}}
+      <p>
+        SELECTED CELL ID: <strong>{{selectedCellId || 'null'}}</strong>
+      </p>
+      <p>
+        SELECTED CELL NEIGHBOR IDS <strong>{{selectedCellNeighborIds}}</strong> 
+      </p>
       <template v-for="cell in displayHexagonalGrid">
         <div
           :key="cell.id"
