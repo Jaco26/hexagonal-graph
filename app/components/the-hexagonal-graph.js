@@ -50,7 +50,6 @@ function makeCell(id, parent, angleFromParent, cellDimensionDefaults) {
  */
 function makeHexagonalGrid(layersRemaining, currentLayer, grid, cellDefaults) {
   if (layersRemaining <= 0) {
-    console.log('returning grid', grid)
     return grid
   }
   if (currentLayer === 0) {
@@ -83,17 +82,12 @@ class Graph {
 
   addVertex(v) {
     if (!this.data[v]) {
-      this.data[v] = {}
+      this.data[v] = []
     }
   }
 
   addEdge(v1, v2, angle) {
-    this.data[v1][angle] = v2
-    let oppositeAngle = circle.findOppositeAngle(angle)
-    if (oppositeAngle === 360) {
-      oppositeAngle = 0
-    }
-    this.data[v2][oppositeAngle] = v1
+    this.data[v1].push({ angle, id: v2 })
   }
 }
 
@@ -117,6 +111,58 @@ function getCellByExactCoords(x, y) {
     }
   }
 }
+
+
+
+function buildTree(adjacencyList, parentId) {
+  const visited = {}
+  const layers = []
+  function traverse(prevLayerList) {
+    const newLayer = []
+    prevLayerList.forEach(cellId => {
+      const neighbors = adjacencyList[cellId].map(x => x.id)
+      visited[cellId] = true
+      neighbors.forEach(x => {
+        if (!visited[x]) {
+          newLayer.push(x)
+          visited[x] = true
+        }
+      })
+    })
+    if (newLayer.length) {
+      layers.push(newLayer)
+      traverse(newLayer)
+    } else {
+      return
+    }
+  }
+  traverse([parentId])
+  return layers
+}
+
+
+/*
+  Embodied Adjacency
+  0: {
+    neighbors: {
+      1: {
+        angle: 0,
+        neighbors: { 
+          18: { angle: 0, neighbors: { ... } } 
+          7: { angle: 60, neighbors: { ... }}
+        }
+      },
+      2: {
+        angle: 60,
+        neighbors: { 
+          8: { angle: 0, neighbors: { ... } },
+          9: { angle: 60, neighbors: { ... } } }
+      }
+    }
+  }
+   
+*/
+
 
 /** @param {Cell[]} grid */
 function makeAdjacencyListFrom(grid){
@@ -152,8 +198,14 @@ export default {
     adjacencyList() {
       return makeAdjacencyListFrom(this.grid)
     },
+    relativeTreeGraph() {
+      return Object.keys(this.adjacencyList).reduce((acc, cellId) => {
+        acc[cellId] = buildTree(this.adjacencyList, cellId)
+        return acc
+      }, {})
+    },
     selectedNeighborIds() {
-      return Object.values(this.adjacencyList[this.selectedCellId] || {})
+      return Object.values(this.adjacencyList[this.selectedCellId] || {}).map(x => x.id)
     },
     gridDisplay() {
       return this.grid.map(cell => {
@@ -161,19 +213,21 @@ export default {
           id: cell.id,
           class: 'board-cells__cell',
           style: {
-            zIndex: cell.id === this.selectedCellId
-              ? 100
-              : this.selectedNeighborIds.includes(cell.id)
-                ? 50
-                : 0,
             top: cell.dimensions.y + 'px',
             left: cell.dimensions.x + 'px',
             width: cell.dimensions.r * 2 + 'px',
-            height: cell.dimensions.r * 2 + 'px'
+            height: cell.dimensions.r * 2 + 'px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
           }
         }
-        if (this.selectedNeighborIds.includes(cell.id)) {
-          rv.class += ' first-nbr'
+        if (this.relativeTreeGraph[this.selectedCellId]) {
+          this.relativeTreeGraph[this.selectedCellId].forEach((layer, i) => {
+            if (layer.includes(cell.id)) {
+              rv.class += ` nbr-${i + 1}`
+            }
+          })
         }
         return rv
       })
@@ -185,16 +239,35 @@ export default {
     }
   },
   template: `
-    <div>
-      <template v-for="cell in gridDisplay">
-        <div
-          :key="cell.id"
-          :style="cell.style"
-          :class="cell.class"
-          @mouseenter="selectedCellId = cell.id"
-          @mouseleave="selectedCellId = null"
-        ></div>
-      </template>
+    <div class="row">
+    <div class="flex">
+        <div class="board-cells">
+          <template v-for="cell in gridDisplay">
+            <div
+              :key="cell.id"
+              :style="cell.style"
+              :class="cell.class"
+              @mouseenter="selectedCellId = cell.id"
+              @mouseleave="selectedCellId = null"
+            >
+              {{cell.id}}
+            </div>
+          </template>
+        </div>
+      </div>
+      <div class="flex">
+        <p>
+          HOVERED CELL ID: <strong>{{selectedCellId || 'null'}}</strong>
+        </p>
+        <div>
+          HOVERED CELL NEIGHBOR IDS:
+          <template v-for="(layer, i) in relativeTreeGraph[selectedCellId] || []">
+            <p :key="i">
+              LAYER {{i + 1}}: <strong>{{layer}}</strong> 
+            </p>
+          </template>
+        </div>
+      </div>
     </div>
   `,
 }

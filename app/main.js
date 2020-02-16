@@ -6,12 +6,10 @@ const app = new Vue({
     HexagonalGraph
   },
   template: `
-    <div class="app-wrap">
-        <HexagonalGraph :width="500" :height="500" />
-
+    <div>
+      <HexagonalGraph :width="500" :height="500" />
     </div>
   `,
-  
 })
 
 app.$mount('#app')
