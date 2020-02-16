@@ -4,33 +4,59 @@
 
 body {
   font-family: 'Courier New', Courier, monospace;
-  font-size: 1.125rem;
 }
 
-.board {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  border: aqua 1rem outset;
-  /* background: #fa8; */
+.row {
+  display: flex;
+  flex-flow: row wrap;
 }
+
+.flex {
+  flex: 1
+}
+
+/* .board {
+  display: flex;
+} */
 
 .board-cells {
-  display: flex;
+  background: blue;
   position: relative;
 }
 
 .board-cells__cell {
   position: absolute;
-  background: lightblue;
+  border: 1px solid #aaa;
   border-radius: 50% 50%;
   cursor: pointer;
+  transition: all .3s ease;
 }
 
 .board-cells__cell:hover {
-  background: pink;
+  background-color: aqua;
 }
 
-.board-cells__cell.board-cells__cell--first-nbr {
-  background: coral;
+
+.board-cells__cell.nbr-1 {
+  background-color: #a33;
+  color: white;
+}
+.board-cells__cell.nbr-2 {
+  background-color: #5a5;
+  color: white;
+}
+.board-cells__cell.nbr-3 {
+  background-color: #77d;
+  color: white;
+}
+.board-cells__cell.nbr-4 {
+  background-color: #399;
+  color: white;
+}
+.board-cells__cell.nbr-5 {
+  background-color: #b5b;
+  color: white;
+}
+.board-cells__cell.nbr-6 {
+  background-color: #cc7;
 }
